@@ -7,8 +7,8 @@ option go_package = "./protoc";
 message goodsListInfo {
     int64 id = 1;
     string title = 2;
-    string picture = 3;
-    float cover = 4;
+    string cover = 3;
+    double prices = 4;
     int64 business_id = 5;
     string business_name = 6;
 }
@@ -20,7 +20,7 @@ message goodsListResponse {
 
 message goodsListRequest {
     int64 type = 1;
-    int64 page = 2;
+    int64 id = 2;
     int64 limit = 3;
 }
 

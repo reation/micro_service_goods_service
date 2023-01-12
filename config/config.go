@@ -1,0 +1,9 @@
+package config
+
+var (
+	RETURE_STATES_NORMAL       int64 = 1
+	RETURE_STATES_EMPTY        int64 = 21
+	RETURE_STATES_TYPE_EMPTY   int64 = 22
+	RETURE_STATES_SECOND_EMPTY int64 = 23
+	RETURE_STATES_ERROR        int64 = 31
+)

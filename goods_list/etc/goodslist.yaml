@@ -1,6 +1,13 @@
 Name: goodslist.rpc
-ListenOn: 127.0.0.1:8080
+ListenOn: 0.0.0.0:8010
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - 49.233.55.149:2379
   Key: goodslist.rpc
+Mysql:
+  StockTable:
+    User: "root"
+    Passwd: "19861029"
+    Addr: "152.136.253.191"
+    DBName: "shop_microservice_stock"
+    Port: "3306"

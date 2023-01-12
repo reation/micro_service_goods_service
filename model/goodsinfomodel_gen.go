@@ -28,6 +28,7 @@ type (
 		FindOne(ctx context.Context, id int64) (*GoodsInfo, error)
 		Update(ctx context.Context, data *GoodsInfo) error
 		Delete(ctx context.Context, id int64) error
+		GetGoodsListInTypeID(ctx context.Context, typeID string, id, limit int64) (*[]GoodsInfo, error)
 	}
 
 	defaultGoodsInfoModel struct {
@@ -70,6 +71,22 @@ func (m *defaultGoodsInfoModel) FindOne(ctx context.Context, id int64) (*GoodsIn
 	query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", goodsInfoRows, m.table)
 	var resp GoodsInfo
 	err := m.conn.QueryRowCtx(ctx, &resp, query, id)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *defaultGoodsInfoModel) GetGoodsListInTypeID(ctx context.Context, typeID string, id, limit int64) (*[]GoodsInfo, error) {
+	query := fmt.Sprintf("select %s from %s where `id` > ? ", goodsInfoRows, m.table)
+	query = fmt.Sprintf("%s and `type_id` in (%s) ", query, typeID)
+	query = fmt.Sprintf("%s limit %d", query, limit)
+	var resp []GoodsInfo
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, id)
 	switch err {
 	case nil:
 		return &resp, nil
