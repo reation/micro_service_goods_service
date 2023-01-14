@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"micro_service_goods_service/goods_list/internal/logic"
-	"micro_service_goods_service/goods_list/internal/svc"
-	"micro_service_goods_service/protoc"
+	"github.com/reation/micro_service_goods_service/goods_list/internal/logic"
+	"github.com/reation/micro_service_goods_service/goods_list/internal/svc"
+	"github.com/reation/micro_service_goods_service/protoc"
 )
 
 type GoodsListServer struct {

@@ -4,7 +4,8 @@ import "github.com/zeromicro/go-zero/zrpc"
 
 type Config struct {
 	zrpc.RpcServerConf
-	Mysql struct {
+	StockService zrpc.RpcClientConf
+	Mysql        struct {
 		StockTable struct {
 			User   string
 			Passwd string

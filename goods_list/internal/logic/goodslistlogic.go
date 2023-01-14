@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
-	"micro_service_goods_service/config"
-	"micro_service_goods_service/goods_list/internal/svc"
-	"micro_service_goods_service/model"
-	"micro_service_goods_service/protoc"
+	"github.com/reation/micro_service_goods_service/config"
+	"github.com/reation/micro_service_goods_service/goods_list/internal/svc"
+	"github.com/reation/micro_service_goods_service/model"
+	"github.com/reation/micro_service_goods_service/protoc"
 	"strconv"
 	"strings"
 

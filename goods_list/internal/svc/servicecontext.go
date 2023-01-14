@@ -2,9 +2,9 @@ package svc
 
 import (
 	"fmt"
+	"github.com/reation/micro_service_goods_service/goods_list/internal/config"
+	"github.com/reation/micro_service_goods_service/model"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"micro_service_goods_service/goods_list/internal/config"
-	"micro_service_goods_service/model"
 )
 
 type GoodsDB struct {

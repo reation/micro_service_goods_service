@@ -6,7 +6,7 @@ package goodslist
 import (
 	"context"
 
-	"micro_service_goods_service/protoc"
+	"github.com/reation/micro_service_goods_service/protoc"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

@@ -1,4 +1,4 @@
-module micro_service_goods_service
+module github.com/reation/micro_service_goods_service
 
 go 1.19
 
