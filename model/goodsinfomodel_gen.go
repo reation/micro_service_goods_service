@@ -83,7 +83,9 @@ func (m *defaultGoodsInfoModel) FindOne(ctx context.Context, id int64) (*GoodsIn
 
 func (m *defaultGoodsInfoModel) GetGoodsListInTypeID(ctx context.Context, typeID string, id, limit int64) (*[]GoodsInfo, error) {
 	query := fmt.Sprintf("select %s from %s where `id` > ? ", goodsInfoRows, m.table)
-	query = fmt.Sprintf("%s and `type_id` in (%s) ", query, typeID)
+	if typeID != "" {
+		query = fmt.Sprintf("%s and `type_id` in (%s) ", query, typeID)
+	}
 	query = fmt.Sprintf("%s limit %d", query, limit)
 	var resp []GoodsInfo
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, id)

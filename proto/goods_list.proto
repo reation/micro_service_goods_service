@@ -11,6 +11,7 @@ message goodsListInfo {
     double prices = 4;
     int64 business_id = 5;
     string business_name = 6;
+    int64 stock_num = 7;
 }
 
 message goodsListResponse {

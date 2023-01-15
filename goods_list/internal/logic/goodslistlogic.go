@@ -6,6 +6,7 @@ import (
 	"github.com/reation/micro_service_goods_service/goods_list/internal/svc"
 	"github.com/reation/micro_service_goods_service/model"
 	"github.com/reation/micro_service_goods_service/protoc"
+	"github.com/reation/micro_service_stock_service/goods_stock_list/getgoodsstocklist"
 	"strconv"
 	"strings"
 
@@ -16,6 +17,11 @@ type GoodsListLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+}
+
+type GoodsStockInfo struct {
+	goodsID  int64
+	goodsNum int64
 }
 
 func NewGoodsListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GoodsListLogic {
@@ -47,6 +53,18 @@ func (l *GoodsListLogic) GoodsList(in *protoc.GoodsListRequest) (*protoc.GoodsLi
 		return &protoc.GoodsListResponse{States: states, GoodList: []*protoc.GoodsListInfo{}}, nil
 	}
 	var resp = make([]*protoc.GoodsListInfo, len(*goodsList))
+	var goodsIDList = make([]*getgoodsstocklist.GetGoodsStockIDList, len(*goodsList))
+	for k, v := range *goodsList {
+		goodsIDList[k] = &getgoodsstocklist.GetGoodsStockIDList{
+			GoodsId: v.Id,
+		}
+	}
+
+	goodsStockList := l.getGoodsStock(goodsIDList)
+	if goodsStockList == nil {
+		return &protoc.GoodsListResponse{States: states, GoodList: resp}, nil
+	}
+
 	for k, v := range *goodsList {
 		resp[k] = &protoc.GoodsListInfo{
 			Id:           v.Id,
@@ -55,6 +73,7 @@ func (l *GoodsListLogic) GoodsList(in *protoc.GoodsListRequest) (*protoc.GoodsLi
 			Prices:       v.Prices,
 			BusinessId:   v.BusinessId,
 			BusinessName: "暂无",
+			StockNum:     goodsStockList[v.Id].goodsNum,
 		}
 	}
 
@@ -62,7 +81,6 @@ func (l *GoodsListLogic) GoodsList(in *protoc.GoodsListRequest) (*protoc.GoodsLi
 }
 
 func (l *GoodsListLogic) getGoodsList(typeID, id, limit int64) (int64, *[]model.GoodsInfo, error) {
-	// todo: add your logic here and delete this line
 	var goodsTypeID = ""
 	if typeID != 0 {
 		goodsTypeInfo, err := l.svcCtx.GoodsModel.GoodsTypeModel.FindOne(l.ctx, id)
@@ -85,14 +103,30 @@ func (l *GoodsListLogic) getGoodsList(typeID, id, limit int64) (int64, *[]model.
 			goodsTypeID = strconv.FormatInt(goodsTypeInfo.Id, 10)
 		}
 	}
-
 	goodsListData, err := l.svcCtx.GoodsModel.GoodsInfoModel.GetGoodsListInTypeID(l.ctx, goodsTypeID, id, limit)
-	switch err {
-	case nil:
+	if err != nil {
 		return config.RETURE_STATES_ERROR, &[]model.GoodsInfo{}, err
-	case model.ErrNotFound:
+	}
+	if err == model.ErrNotFound {
 		return config.RETURE_STATES_EMPTY, &[]model.GoodsInfo{}, err
 	}
 
 	return config.RETURE_STATES_NORMAL, goodsListData, nil
+}
+
+func (l *GoodsListLogic) getGoodsStock(idList []*getgoodsstocklist.GetGoodsStockIDList) map[int64]GoodsStockInfo {
+	goodsStockListResponse, err := l.svcCtx.StockService.GetGoodsStockByGoodsIDList(l.ctx, &getgoodsstocklist.GetGoodsStockListRequest{GoodsIDList: idList})
+
+	if goodsStockListResponse.GetStates() != config.RETURE_STATES_NORMAL || err != nil {
+		return nil
+	}
+	var resp = make(map[int64]GoodsStockInfo)
+	for _, v := range goodsStockListResponse.GetGoodsStockList() {
+		resp[v.GetGoodsId()] = GoodsStockInfo{
+			goodsID:  v.GetGoodsId(),
+			goodsNum: v.GetGoodsNum(),
+		}
+	}
+
+	return resp
 }

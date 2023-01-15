@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package goods_detail;
+
+option go_package = "./protoc";
+
+message goodsDataInfo {
+    int64 id = 1;
+    string title = 2;
+    string cover = 3;
+    string picture = 4;
+    string profile = 5;
+    double prices = 6;
+    string detail = 7;
+    int64 business_id = 8;
+    string business_name = 9;
+    int64 state = 10;
+    int64 stock_num = 11;
+}
+
+message goodsDetailResponse {
+    int64 states = 1;
+    goodsDataInfo good_detail = 2;
+}
+
+message goodsDetailRequest {
+    int64 goods_id = 1;
+}
+
+service GoodsDetail{
+    rpc GoodsDetail(goodsDetailRequest) returns (goodsDetailResponse);
+}

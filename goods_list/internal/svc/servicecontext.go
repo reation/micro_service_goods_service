@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/reation/micro_service_goods_service/goods_list/internal/config"
 	"github.com/reation/micro_service_goods_service/model"
+	"github.com/reation/micro_service_stock_service/goods_stock_list/getgoodsstocklist"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type GoodsDB struct {
@@ -13,8 +15,9 @@ type GoodsDB struct {
 }
 
 type ServiceContext struct {
-	Config     config.Config
-	GoodsModel GoodsDB
+	Config       config.Config
+	GoodsModel   GoodsDB
+	StockService getgoodsstocklist.GetGoodsStockList
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -28,7 +31,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	)
 
 	return &ServiceContext{
-		Config: c,
+		Config:       c,
+		StockService: getgoodsstocklist.NewGetGoodsStockList(zrpc.MustNewClient(c.StockService)),
 		GoodsModel: GoodsDB{
 			GoodsInfoModel: model.NewGoodsInfoModel(sqlx.NewMysql(dataSourceUrl)),
 			GoodsTypeModel: model.NewGoodsTypeModel(sqlx.NewMysql(dataSourceUrl)),
