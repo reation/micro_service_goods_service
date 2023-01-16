@@ -26,3 +26,8 @@ func (s *GoodsDetailServer) GoodsDetail(ctx context.Context, in *protoc.GoodsDet
 	l := logic.NewGoodsDetailLogic(ctx, s.svcCtx)
 	return l.GoodsDetail(in)
 }
+
+func (s *GoodsDetailServer) GetGoodsListByIDList(ctx context.Context, in *protoc.GetGoodsListByIDListRequest) (*protoc.GetGoodsListByIDListResponse, error) {
+	l := logic.NewGetGoodsListByIDListLogic(ctx, s.svcCtx)
+	return l.GetGoodsListByIDList(in)
+}

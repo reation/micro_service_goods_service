@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GoodsDetailClient interface {
 	GoodsDetail(ctx context.Context, in *GoodsDetailRequest, opts ...grpc.CallOption) (*GoodsDetailResponse, error)
+	GetGoodsListByIDList(ctx context.Context, in *GetGoodsListByIDListRequest, opts ...grpc.CallOption) (*GetGoodsListByIDListResponse, error)
 }
 
 type goodsDetailClient struct {
@@ -42,11 +43,21 @@ func (c *goodsDetailClient) GoodsDetail(ctx context.Context, in *GoodsDetailRequ
 	return out, nil
 }
 
+func (c *goodsDetailClient) GetGoodsListByIDList(ctx context.Context, in *GetGoodsListByIDListRequest, opts ...grpc.CallOption) (*GetGoodsListByIDListResponse, error) {
+	out := new(GetGoodsListByIDListResponse)
+	err := c.cc.Invoke(ctx, "/goods_detail.GoodsDetail/GetGoodsListByIDList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GoodsDetailServer is the server API for GoodsDetail service.
 // All implementations must embed UnimplementedGoodsDetailServer
 // for forward compatibility
 type GoodsDetailServer interface {
 	GoodsDetail(context.Context, *GoodsDetailRequest) (*GoodsDetailResponse, error)
+	GetGoodsListByIDList(context.Context, *GetGoodsListByIDListRequest) (*GetGoodsListByIDListResponse, error)
 	mustEmbedUnimplementedGoodsDetailServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedGoodsDetailServer struct {
 
 func (UnimplementedGoodsDetailServer) GoodsDetail(context.Context, *GoodsDetailRequest) (*GoodsDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GoodsDetail not implemented")
+}
+func (UnimplementedGoodsDetailServer) GetGoodsListByIDList(context.Context, *GetGoodsListByIDListRequest) (*GetGoodsListByIDListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsListByIDList not implemented")
 }
 func (UnimplementedGoodsDetailServer) mustEmbedUnimplementedGoodsDetailServer() {}
 
@@ -88,6 +102,24 @@ func _GoodsDetail_GoodsDetail_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GoodsDetail_GetGoodsListByIDList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGoodsListByIDListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoodsDetailServer).GetGoodsListByIDList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goods_detail.GoodsDetail/GetGoodsListByIDList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoodsDetailServer).GetGoodsListByIDList(ctx, req.(*GetGoodsListByIDListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GoodsDetail_ServiceDesc is the grpc.ServiceDesc for GoodsDetail service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var GoodsDetail_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GoodsDetail",
 			Handler:    _GoodsDetail_GoodsDetail_Handler,
+		},
+		{
+			MethodName: "GetGoodsListByIDList",
+			Handler:    _GoodsDetail_GetGoodsListByIDList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

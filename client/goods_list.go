@@ -14,7 +14,33 @@ const (
 )
 
 func main() {
-	goodsList()
+	//goodsList()
+	//goodsDetail()
+	goodsDetailList()
+}
+
+func goodsDetailList() {
+	conn, err := grpc.Dial(GoodsDetailAddress, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+
+	defer conn.Close()
+	c := protoc.NewGoodsDetailClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	var idList = make([]*protoc.GoodsDetailGoodsIDList, 3)
+	idList[0] = &protoc.GoodsDetailGoodsIDList{Id: 1}
+	idList[1] = &protoc.GoodsDetailGoodsIDList{Id: 5}
+	idList[2] = &protoc.GoodsDetailGoodsIDList{Id: 7}
+	r, err := c.GetGoodsListByIDList(ctx, &protoc.GetGoodsListByIDListRequest{IdList: idList})
+	if err != nil {
+		log.Fatalf("error : %v", err)
+	}
+
+	log.Printf("states: %d", r.GetStates())
+	log.Println(r.GoodList)
 }
 
 func goodsDetail() {

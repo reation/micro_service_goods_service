@@ -13,12 +13,16 @@ import (
 )
 
 type (
-	GoodsDataInfo       = protoc.GoodsDataInfo
-	GoodsDetailRequest  = protoc.GoodsDetailRequest
-	GoodsDetailResponse = protoc.GoodsDetailResponse
+	GetGoodsListByIDListRequest  = protoc.GetGoodsListByIDListRequest
+	GetGoodsListByIDListResponse = protoc.GetGoodsListByIDListResponse
+	GoodsDataInfo                = protoc.GoodsDataInfo
+	GoodsDetailGoodsIDList       = protoc.GoodsDetailGoodsIDList
+	GoodsDetailRequest           = protoc.GoodsDetailRequest
+	GoodsDetailResponse          = protoc.GoodsDetailResponse
 
 	GoodsDetail interface {
 		GoodsDetail(ctx context.Context, in *GoodsDetailRequest, opts ...grpc.CallOption) (*GoodsDetailResponse, error)
+		GetGoodsListByIDList(ctx context.Context, in *GetGoodsListByIDListRequest, opts ...grpc.CallOption) (*GetGoodsListByIDListResponse, error)
 	}
 
 	defaultGoodsDetail struct {
@@ -35,4 +39,9 @@ func NewGoodsDetail(cli zrpc.Client) GoodsDetail {
 func (m *defaultGoodsDetail) GoodsDetail(ctx context.Context, in *GoodsDetailRequest, opts ...grpc.CallOption) (*GoodsDetailResponse, error) {
 	client := protoc.NewGoodsDetailClient(m.cli.Conn())
 	return client.GoodsDetail(ctx, in, opts...)
+}
+
+func (m *defaultGoodsDetail) GetGoodsListByIDList(ctx context.Context, in *GetGoodsListByIDListRequest, opts ...grpc.CallOption) (*GetGoodsListByIDListResponse, error) {
+	client := protoc.NewGoodsDetailClient(m.cli.Conn())
+	return client.GetGoodsListByIDList(ctx, in, opts...)
 }

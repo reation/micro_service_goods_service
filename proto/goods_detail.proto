@@ -27,6 +27,20 @@ message goodsDetailRequest {
     int64 goods_id = 1;
 }
 
+message goodsDetailGoodsIDList{
+    int64 id = 1;
+}
+
+message GetGoodsListByIDListRequest{
+    repeated goodsDetailGoodsIDList id_list = 1;
+}
+
+message GetGoodsListByIDListResponse {
+    int64 states = 1;
+    repeated goodsDataInfo good_list = 2;
+}
+
 service GoodsDetail{
     rpc GoodsDetail(goodsDetailRequest) returns (goodsDetailResponse);
+    rpc GetGoodsListByIDList(GetGoodsListByIDListRequest) returns (GetGoodsListByIDListResponse);
 }
